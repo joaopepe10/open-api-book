@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Swagger Books - OpenAPI 3.0
+  description: |
+    This is a sample Pet Store Server based on the OpenAPI 3.0 specification. You can find out more about it [here](http://swagger.io).
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: book
+    description: Basic CRUD operations for books
+paths:
+  /book:
+    post:
+      tags:
+        - book
+      summary: Create book
+      description: Create a new book.
+      operationId: createBook
+      requestBody:
+        description: Book object to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+    get:
+      tags:
+        - book
+      summary: List all books
+      description: Retrieve a list of all books.
+      operationId: listAllBooks
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponse'
+  /book/{id}:
+    get:
+      tags:
+        - book
+      summary: Get book by ID
+      description: Retrieve a book by its ID.
+      operationId: getBookById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '404':
+          description: Book not found
+    put:
+      tags:
+        - book
+      summary: Update book
+      description: Update an existing book.
+      operationId: updateBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated book object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '404':
+          description: Book not found
+    delete:
+      tags:
+        - book
+      summary: Delete book
+      description: Delete a book by its ID.
+      operationId: deleteBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of the book to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Book deleted
+        '404':
+          description: Book not found
+components:
+  schemas:
+    BookRequest:
+      type: object
+      required:
+        - author
+        - title
+      properties:
+        author:
+          type: string
+          example: theBook
+        title:
+          type: string
+          example: John
+          minLength: 3
+          maxLength: 20
+        status:
+          $ref: '#/components/schemas/BookStatus'
+    BookResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: f0822b54-0720-11ee-be56-0242ac120002
+        author:
+          type: string
+          example: theBook
+        title:
+          type: string
+          example: John
+        status:
+          $ref: '#/components/schemas/BookStatus'
+        createdAt:
+          type: string
+          description: Creation date
+          format: date-time
+    BookStatus:
+      type: string
+      description: Book Status
+      enum: [ availability, unavailability, reserved ]
+      example: availability
